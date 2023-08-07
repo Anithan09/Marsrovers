@@ -1,0 +1,97 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+public class RoverMoveTest {
+
+    private WebDriver driver;
+    private static final String APP_URL = "http://your_test_app_url"; // Replace this with the actual test app URL
+
+    @BeforeClass
+    public void setUp() {
+        // Replace this path with the path to your ChromeDriver executable
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+    }
+//verify initiatilastion
+@Test
+    public void testRoverInitializationWithValidDirectionAndPosition() {
+        // Scenario: Initialize Rover with a specific direction and position
+        
+        // Simulate selecting direction "N" and providing position (0, 0)
+        driver.findElement(By.id("direction")).sendKeys("N");
+        driver.findElement(By.id("xCoordinate")).sendKeys("0");
+        driver.findElement(By.id("yCoordinate")).sendKeys("0");
+        
+
+        // Verify the Rover's direction and position
+        String direction = driver.findElement(By.id("roverDirection")).getText();
+        String position = driver.findElement(By.id("roverPosition")).getText();
+
+        Assert.assertEquals(direction, "N");
+        Assert.assertEquals(position, "(0, 0)");
+    }
+
+
+@Test
+    public void testRoverMovement() {
+        // Scenario: Move the Rover's x and y position and location
+
+        // Navigate to the test application
+        driver.get(APP_URL);
+
+        // Simulate initializing the Rover with direction "N" and position (0, 0)
+        driver.findElement(By.id("direction")).sendKeys("N");
+        driver.findElement(By.id("xCoordinate")).sendKeys("0");
+        driver.findElement(By.id("yCoordinate")).sendKeys("0");
+        driver.findElement(By.id("initializeButton")).click();
+
+        // Simulate moving the Rover
+        driver.findElement(By.id("moveButton")).click();
+
+        // Verify the Rover's new position and location
+        String newPosition = driver.findElement(By.id("roverPosition")).getText();
+        String newLocation = driver.findElement(By.id("roverLocation")).getText();
+
+        // Assuming the Rover has moved one step north, the new position should be (0, 1)
+        Assert.assertEquals(newPosition, "(0, 1)");
+        // Assuming the Rover has not changed direction, the new location should still be "N"
+        Assert.assertEquals(newLocation, "N");
+
+    }
+}
+
+
+
+    @Test
+    public void testRoverMovementScenario() {
+        // Scenario: Move the Rover as per the given input
+
+        // Navigate to the test application
+        driver.get(APP_URL);
+
+        // Provide the input and sequence of commands
+        driver.findElement(By.id("gridSize")).sendKeys("5 5");
+        driver.findElement(By.id("initialPosition")).sendKeys("1 2 N");
+        driver.findElement(By.id("commands")).sendKeys("LMLMLMLMM");
+        driver.findElement(By.id("executeButton")).click();
+
+        // Verify the final position and direction of the Rover
+        String finalPosition = driver.findElement(By.id("finalPosition")).getText();
+        String finalDirection = driver.findElement(By.id("finalDirection")).getText();
+
+        // The expected final position should be (1, 3), and the direction should be "N"
+        Assert.assertEquals(finalPosition, "(1, 3)");
+        Assert.assertEquals(finalDirection, "N");
+    }
+}
+
+@AfterClass
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
