@@ -1,0 +1,26 @@
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+public class RoverMovementSteps {
+    private Rover rover;
+
+    @Given("a new Rover at position \\((\\d+), (\\d+)\\) facing {string}")
+    public void createNewRover(int x, int y, String direction) {
+        rover = new Rover(x, y, direction);
+    }
+
+    @When("I move the Rover {int} steps in direction {string}")
+    public void moveRoverSteps(int steps, String direction) {
+        for (int i = 0; i < steps; i++) {
+            rover.move(direction);
+        }
+    }
+
+    @Then("the Rover's position should be \\((\\d+), (\\d+)\\) and facing {string}")
+    public void verifyRoverPositionAndDirection(int expectedX, int expectedY, String expectedDirection) {
+        Assert.assertEquals(rover.getX(), expectedX);
+        Assert.assertEquals(rover.getY(), expectedY);
+        Assert.assertEquals(rover.getDirection(), expectedDirection);
+    }
+}
